@@ -11,27 +11,22 @@ namespace Boboyan\ContentBundle\ImageProcessor;
 
 abstract class ImageProcessor
 {
-
-    protected $image;
     const DIR_SMALL = '/upload/images_small/';
     const DIR_LARGE = '/upload/images_large/';
     const DIR_ORIGINAL = '/upload/images_original/';
+    const PATH_ENTITY = 'Boboyan\ContentBundle\Entity\Image';
 
-    // получаем файл на обработку
-    public function __construct($image){
+    public function store($image, $ext){}
 
-        $this->image = $image;
-    }
+    //public function delete(){}
 
-    public function store(){}
-
-    public function delete(){}
-
-    public function show(){}
+    //public function show(){}
 
     public function resizeImg($name, $filePath, $param)
     {
+        //phpinfo();die();
         $im = new \Imagick($name);
+       // echo 'gut';die();
         if(array_key_exists('thumbwidth', $param) and array_key_exists('thumbheight', $param)){
             $thumbwidth = (int)$param['thumbwidth'];
             $thumbheight = (int)$param['thumbheight'];

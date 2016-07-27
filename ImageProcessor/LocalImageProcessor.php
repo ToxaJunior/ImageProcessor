@@ -16,25 +16,45 @@ class LocalImageProcessor extends ImageProcessor
 
     }
 
-    public function store()
+    private function createDir($param){
+
+        // создаем директории для сохранения
+        if(!file_exists($param)){
+            mkdir($param);
+        }
+        chmod($param, 0777);
+    }
+
+    public function store($tmpName, $ext)
     {
+        $fileName = md5(uniqid()).'.'.$ext;
+        //echo $fileName,$tmpName;die();
+
+
         $this->dirSmall = realpath('').self::DIR_SMALL;
         $this->dirLarge = realpath('').self::DIR_LARGE;
         $this->dirOriginal = realpath('').self::DIR_ORIGINAL;
 
-        //Создаем и сохраняем превьюшки
-        $this->resizeImg($this->image, $this->dirSmall . $this->image, array('thumbwidth' => 420, 'thumbheight' => 280));
-        $this->resizeImg($this->image, $this->dirLarge . $this->image, array('thumbwidth' => 0, 'thumbheight' => 600,
+        // создаем директории
+        $this->createDir($this->dirSmall);
+        $this->createDir($this->dirLarge);
+        $this->createDir($this->dirOriginal);
+
+        // Создаем и сохраняем превьюшки
+        $this->resizeImg($tmpName, $this->dirSmall . $fileName, array('thumbwidth' => 420, 'thumbheight' => 280));
+        $this->resizeImg($tmpName, $this->dirLarge . $fileName, array('thumbwidth' => 0, 'thumbheight' => 600,
             'cropwidth' => 860, 'cropheight' => 600));
 
         //сохраняем оригинал изображения
-        rename($this->image, $this->dirOriginal);
+        rename($tmpName, $this->dirOriginal.$fileName);
+
+        return $fileName;
     }
 
     public function show($id)
     {
         $image = $this->getDoctrine()
-            ->getRepository('Boboyan\ContentBundle\Entity\Image')
+            ->getRepository(self::PATH_ENTITY)
             ->find($id);
 
         if (!$image) {

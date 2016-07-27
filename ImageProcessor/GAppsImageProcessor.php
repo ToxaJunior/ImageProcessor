@@ -17,7 +17,7 @@ class GAppsImageProcessor extends ImageProcessor
     const CLIENT_SECRET = null;
     const DEVSTORAGE_URL = 'https://www.googleapis.com/auth/devstorage.full_control';
 
-    public function store()
+    public function store($image)
     {
         $client = new \Google_Client();
 
@@ -38,10 +38,10 @@ class GAppsImageProcessor extends ImageProcessor
         $objects = $storageService->objects;
 
         $object = new \Google_Service_Storage_StorageObject();
-        $object->setName($this->image); // имя файла в bucket(на диске google)
+        $object->setName($image); // имя файла в bucket(на диске google)
         $res = $objects->insert(
             'bobo-1379.appspot.com', $object, array(
-                'data' => file_get_contents(realpath('').'/upload/images_temp/test.jpeg'), // контент файла
+                'data' => file_get_contents(realpath('').'/upload/images_small/test.jpeg'), // контент файла
                 'uploadType' => 'media',
                 //'contentEncoding' => CFileHelper::getMimeType('FILE_PATH'), // MIME-тип файла, в этом примере для этого используется класс CFileHelper из Yii2
                 //'mimeType' => CFileHelper::getMimeType('FILE_PATH'), // то же самое, так же вы можете установить универсальный application/octet-stream
