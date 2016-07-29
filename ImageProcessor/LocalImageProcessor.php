@@ -9,9 +9,18 @@
 namespace Boboyan\ContentBundle\ImageProcessor;
 
 
-class LocalImageProcessor extends ImageProcessor
+class LocalImageProcessor implements ImageProcessor
 {
-    public function delete()
+    public $new_path;
+    /**
+     * LocalImageProcessor constructor.
+     */
+    public function __construct($path)
+    {
+        $this->new_path = $path;
+    }
+
+    public function delete($fileId)
     {
 
     }
@@ -25,43 +34,21 @@ class LocalImageProcessor extends ImageProcessor
         chmod($param, 0777);
     }
 
-    public function store($tmpName, $ext)
+    public function save($param)
     {
-        $fileName = md5(uniqid()).'.'.$ext;
-        //echo $fileName,$tmpName;die();
-
-
-        $this->dirSmall = realpath('').self::DIR_SMALL;
-        $this->dirLarge = realpath('').self::DIR_LARGE;
-        $this->dirOriginal = realpath('').self::DIR_ORIGINAL;
-
-        // создаем директории
-        $this->createDir($this->dirSmall);
-        $this->createDir($this->dirLarge);
-        $this->createDir($this->dirOriginal);
-
-        // Создаем и сохраняем превьюшки
-        $this->resizeImg($tmpName, $this->dirSmall . $fileName, array('thumbwidth' => 420, 'thumbheight' => 280));
-        $this->resizeImg($tmpName, $this->dirLarge . $fileName, array('thumbwidth' => 0, 'thumbheight' => 600,
-            'cropwidth' => 860, 'cropheight' => 600));
-
+        // генерируем новое имя файла
+        $fileName = md5(uniqid()).'.'.$param['ext'];
+        // чекаем и если нужно создаем директорию
+        $this->createDir($this->new_path);
         //сохраняем оригинал изображения
-        rename($tmpName, $this->dirOriginal.$fileName);
+        rename($param['temp_path'], $this->new_path.$fileName);
 
-        return $fileName;
+        return $this->new_path.$fileName;
     }
 
-    public function show($id)
+    public function show($fileId)
     {
-        $image = $this->getDoctrine()
-            ->getRepository(self::PATH_ENTITY)
-            ->find($id);
-
-        if (!$image) {
-            throw $this->createNotFoundException(
-                'No product found for id '.$id
-            );
-        }
+     // сформировать и вернуть урл
     }
 
 }
