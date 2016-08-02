@@ -22,7 +22,7 @@ class LocalImageProcessor implements ImageProcessor
 
     public function delete($fileId)
     {
-
+        unlink($this->new_path.$fileId);
     }
 
     private function createDir($param){
@@ -41,14 +41,14 @@ class LocalImageProcessor implements ImageProcessor
         // чекаем и если нужно создаем директорию
         $this->createDir($this->new_path);
         //сохраняем оригинал изображения
-        rename($param['temp_path'], $this->new_path.$fileName);
+        move_uploaded_file($param['temp_path'], $this->new_path.$fileName);
 
         return $this->new_path.$fileName;
     }
 
     public function show($fileId)
     {
-     // сформировать и вернуть урл
+     return $this->new_path.$fileId;
     }
 
 }
